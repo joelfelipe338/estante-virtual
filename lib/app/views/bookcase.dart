@@ -14,15 +14,12 @@ class BookCase extends StatefulWidget {
 class _BookCaseState extends State<BookCase> {
 
   List<Book> _books = [];
+  List<Book> _favoriteBooks = [];
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getBooks().then((value){
-      setState(() {
-        _books = value;
-      });
-    });
+    _getBooks();
   }
 
   @override
@@ -49,6 +46,21 @@ class _BookCaseState extends State<BookCase> {
         ),
       ),
     );
+  }
+
+  _getBooks() async {
+    final books = await getBooks();
+    setState(() {
+      _books = books;
+    });
+    final favoriteBooks = await getFavoriteBooks();
+    setState(() {
+      _favoriteBooks = _books.where((book){
+        bool isFavoriteBook = favoriteBooks.contains(book.id.toString());
+        if(isFavoriteBook) book.favorite = true;
+        return isFavoriteBook;
+      }).toList();
+    });
   }
 
 }

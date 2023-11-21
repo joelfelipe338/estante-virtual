@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/book.dart';
+import '../services/bookcase_services.dart';
 
 class BookItem extends StatefulWidget {
   final Book book;
@@ -12,7 +13,6 @@ class BookItem extends StatefulWidget {
 
 class _BookItemState extends State<BookItem> {
 
-  bool _isFavorite = false;
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +29,24 @@ class _BookItemState extends State<BookItem> {
         Positioned(
           top: -4,
           right: 10,
-          child: InkWell(onTap: (){
-            setState(() {
-              _isFavorite = !_isFavorite;
-            });
-          }, child: Icon(Icons.bookmark, color:_isFavorite ? Colors.red  : Colors.amber,size: 30,)),
+          child: InkWell(onTap: widget.book.favorite ? _removeFavorite : _addFavotire,
+              child: Icon(Icons.bookmark, color:widget.book.favorite ? Colors.red  : Colors.amber,size: 30,)),
         )
       ],
     );
+  }
+
+  _removeFavorite() {
+    setState(() {
+      widget.book.favorite = !widget.book.favorite;
+    });
+    removeFavoriteBooks(favoriteBookID: widget.book.id.toString());
+  }
+
+  _addFavotire() {
+    setState(() {
+      widget.book.favorite = !widget.book.favorite;
+    });
+    addFavoriteBook(favoriteBookID: widget.book.id.toString());
   }
 }

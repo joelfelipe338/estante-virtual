@@ -4,13 +4,15 @@ class Book{
   String? autor;
   String? coverUrl;
   String? downloadUrl;
+  bool favorite = false;
 
   Book({
     this.id,
     this.title,
     this.autor,
     this.coverUrl,
-    this.downloadUrl
+    this.downloadUrl,
+    this.favorite = false
   });
 
   Book.fromJson(Map<String, dynamic> json){
