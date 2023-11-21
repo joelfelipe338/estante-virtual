@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:get_it/get_it.dart';
 
-import '../models/book.dart';
+import '../controller/bookcase_controller.dart';
+import '../models/book_model.dart';
 import '../services/bookcase_services.dart';
 
 class BookItem extends StatefulWidget {
-  final Book book;
+  final BookModel book;
   const BookItem({Key? key, required this.book}) : super(key: key);
 
   @override
@@ -13,6 +16,7 @@ class BookItem extends StatefulWidget {
 
 class _BookItemState extends State<BookItem> {
 
+  BookcaseController bookcaseController = GetIt.I.get<BookcaseController>();
 
   @override
   Widget build(BuildContext context) {
@@ -26,27 +30,21 @@ class _BookItemState extends State<BookItem> {
                 fit: BoxFit.contain),
           ),
         ),
-        Positioned(
-          top: -4,
-          right: 10,
-          child: InkWell(onTap: widget.book.favorite ? _removeFavorite : _addFavotire,
-              child: Icon(Icons.bookmark, color:widget.book.favorite ? Colors.red  : Colors.amber,size: 30,)),
-        )
+        Observer(builder: (_){
+          return Positioned(
+            top: -4,
+            right: 10,
+            child: InkWell(onTap: widget.book.favorite
+                ? (){
+              bookcaseController.removeFavoriteBooks(favoriteBook: widget.book);
+            }
+                : (){
+              bookcaseController.addFavoriteBook(favoriteBook: widget.book);
+            } ,
+                child: Icon(Icons.bookmark, color:widget.book.favorite ? Colors.red  : Colors.amber,size: 30,)),
+          );
+        })
       ],
     );
-  }
-
-  _removeFavorite() {
-    setState(() {
-      widget.book.favorite = !widget.book.favorite;
-    });
-    removeFavoriteBooks(favoriteBookID: widget.book.id.toString());
-  }
-
-  _addFavotire() {
-    setState(() {
-      widget.book.favorite = !widget.book.favorite;
-    });
-    addFavoriteBook(favoriteBookID: widget.book.id.toString());
   }
 }

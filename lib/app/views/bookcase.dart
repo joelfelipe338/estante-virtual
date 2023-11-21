@@ -1,7 +1,10 @@
+import 'package:estante_virtual/app/controller/bookcase_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:get_it/get_it.dart';
 import '../components/book_item.dart';
 import '../components/select_favorites_widget.dart';
-import '../models/book.dart';
+import '../models/book_model.dart';
 import '../services/bookcase_services.dart';
 
 class BookCase extends StatefulWidget {
@@ -13,8 +16,9 @@ class BookCase extends StatefulWidget {
 
 class _BookCaseState extends State<BookCase> {
 
-  List<Book> _books = [];
-  List<Book> _favoriteBooks = [];
+
+  BookcaseController bookcaseController = GetIt.I.get<BookcaseController>();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -28,19 +32,24 @@ class _BookCaseState extends State<BookCase> {
       child: Scaffold(
         body: Column(
           children: [
-            const SelectFavorites(),
+            SelectFavorites(),
             Expanded(
-              child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 14.0,
-                    crossAxisSpacing: 8.0,
-                  ),
-                  padding: const EdgeInsets.all(5),
-                  itemCount: _books.length,
-                  itemBuilder: (context, index){
-                    return BookItem(book: _books[index]);
-                  }),
+              child: Observer(
+                builder: (_){
+                  return GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        mainAxisSpacing: 14.0,
+                        crossAxisSpacing: 8.0,
+                      ),
+                      padding: const EdgeInsets.all(5),
+                      itemCount: bookcaseController.showFavoritesBooks ? bookcaseController.favoriteBooks.length : bookcaseController.books.length ,
+                      itemBuilder: (context, index){
+                        BookModel item = bookcaseController.showFavoritesBooks ? bookcaseController.favoriteBooks[index] : bookcaseController.books[index];
+                        return BookItem(book:item);
+                      }) ;
+                },
+              ),
             )
           ],
         ),
@@ -50,17 +59,8 @@ class _BookCaseState extends State<BookCase> {
 
   _getBooks() async {
     final books = await getBooks();
-    setState(() {
-      _books = books;
-    });
-    final favoriteBooks = await getFavoriteBooks();
-    setState(() {
-      _favoriteBooks = _books.where((book){
-        bool isFavoriteBook = favoriteBooks.contains(book.id.toString());
-        if(isFavoriteBook) book.favorite = true;
-        return isFavoriteBook;
-      }).toList();
-    });
+    bookcaseController.updateBook(books);
+    await bookcaseController.getFavoriteBooks();
   }
 
 }
