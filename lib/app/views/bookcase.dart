@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../services/bookcase_services.dart';
+
 class BookCase extends StatefulWidget {
   const BookCase({Key? key}) : super(key: key);
 
@@ -10,6 +12,13 @@ class BookCase extends StatefulWidget {
 class _BookCaseState extends State<BookCase> {
 
   bool _onlyFavorites = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getBooks();
+  }
 
   @override
   Widget build(BuildContext context) {
