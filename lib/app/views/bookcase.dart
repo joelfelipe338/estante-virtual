@@ -51,7 +51,7 @@ class _BookCaseState extends State<BookCase> {
                   width: 1,
                   color: Colors.black,
                 ),
-                color: !_onlyFavorites ? Colors.red : Colors.transparent,
+                color: !_onlyFavorites ? Colors.amber : Colors.transparent,
               ),
               child: Text(
                 'Todos',
@@ -84,7 +84,7 @@ class _BookCaseState extends State<BookCase> {
                   width: 1,
                   color: Colors.black,
                 ),
-                color: _onlyFavorites ? Colors.red : Colors.transparent,
+                color: _onlyFavorites ? Colors.amber : Colors.transparent,
               ),
               child: Text(
                 'Favoritos',
