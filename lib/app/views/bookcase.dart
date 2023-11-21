@@ -16,8 +16,6 @@ class BookCase extends StatefulWidget {
 }
 
 class _BookCaseState extends State<BookCase> {
-
-
   BookcaseController bookcaseController = GetIt.I.get<BookcaseController>();
 
   @override
@@ -36,12 +34,18 @@ class _BookCaseState extends State<BookCase> {
             SelectFavorites(),
             Expanded(
               child: Observer(
-                builder: (_){
-                  return (bookcaseController.showFavoritesBooks && bookcaseController.favoriteBooks.isEmpty) ?
-                    (!bookcaseController.showFavoritesBooks && bookcaseController.books.isEmpty) ?
-                    const Center(child: Text("Nenhum item encontrado!"),) :
-                    const Center(child: Text("Sem livros nos favoritos!"),) :
-                    _bookGrid() ;
+                builder: (_) {
+                  return (bookcaseController.showFavoritesBooks &&
+                          bookcaseController.favoriteBooks.isEmpty)
+                      ? (!bookcaseController.showFavoritesBooks &&
+                              bookcaseController.books.isEmpty)
+                          ? const Center(
+                              child: Text("Nenhum item encontrado!"),
+                            )
+                          : const Center(
+                              child: Text("Sem livros nos favoritos!"),
+                            )
+                      : _bookGrid();
                 },
               ),
             )
@@ -51,75 +55,23 @@ class _BookCaseState extends State<BookCase> {
     );
   }
 
-  Widget _bookGrid(){
+  Widget _bookGrid() {
     return GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             mainAxisSpacing: 14.0,
             crossAxisSpacing: 8.0,
-            childAspectRatio: 0.5
-        ),
+            childAspectRatio: 0.5),
         padding: const EdgeInsets.all(5),
-        itemCount: bookcaseController.showFavoritesBooks ? bookcaseController.favoriteBooks.length : bookcaseController.books.length ,
-        itemBuilder: (context, index){
-          BookModel item = bookcaseController.showFavoritesBooks ? bookcaseController.favoriteBooks[index] : bookcaseController.books[index];
-          return BookItem(book:item, onClick: _openOptions);
+        itemCount: bookcaseController.showFavoritesBooks
+            ? bookcaseController.favoriteBooks.length
+            : bookcaseController.books.length,
+        itemBuilder: (context, index) {
+          BookModel item = bookcaseController.showFavoritesBooks
+              ? bookcaseController.favoriteBooks[index]
+              : bookcaseController.books[index];
+          return BookItem(book: item);
         });
-  }
-
-  _openOptions(){
-    showCupertinoModalPopup(
-      context: context,
-      builder: (contextDialog) {
-        return CupertinoActionSheet(
-          actions: <Widget>[
-            CupertinoActionSheetAction(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-          Text('Download Livro', style: TextStyle(
-          color: Colors.black,
-        ),),
-        SizedBox(width: 10,),
-        Icon(Icons.download)
-          ],
-        ),
-              onPressed: () {},
-            ),
-
-            CupertinoActionSheetAction(
-              child:
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Abrir Livro', style: TextStyle(
-                    color: Colors.black,
-                  ),),
-                  SizedBox(width: 10,),
-                  Icon(Icons.chrome_reader_mode_rounded)
-                ],
-              ),
-              onPressed: () {
-
-              },
-            )
-
-          ],
-          cancelButton: CupertinoActionSheetAction(
-            isDefaultAction: true,
-            child: Text(
-              'Voltar',
-              style: TextStyle(
-                color: Colors.black,
-              ),
-            ),
-            onPressed: () {
-              Navigator.pop(contextDialog);
-            },
-          ),
-        );
-      },
-    );
   }
 
   _getBooks() async {
@@ -127,6 +79,4 @@ class _BookCaseState extends State<BookCase> {
     bookcaseController.updateBook(books);
     await bookcaseController.getFavoriteBooks();
   }
-
 }
-

@@ -1,15 +1,18 @@
+import 'dart:io';
+
+import 'package:flowder_v2/flowder.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../controller/bookcase_controller.dart';
 import '../models/book_model.dart';
-import '../services/bookcase_services.dart';
 
 class BookItem extends StatefulWidget {
   final BookModel book;
-  final Function() onClick;
-  const BookItem({Key? key, required this.book, required this.onClick}) : super(key: key);
+  const BookItem({Key? key, required this.book}) : super(key: key);
 
   @override
   State<BookItem> createState() => _BookItemState();
@@ -22,7 +25,7 @@ class _BookItemState extends State<BookItem> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: widget.onClick,
+      onTap: _openOptions,
       child: Card(
         elevation: 5,
         child: Stack(
@@ -85,4 +88,103 @@ class _BookItemState extends State<BookItem> {
       ),
     );
   }
+
+  _openOptions() {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (contextDialog) {
+        return CupertinoActionSheet(
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Download Livro',
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Icon(Icons.download)
+                ],
+              ),
+              onPressed: (){launchURL(widget.book.downloadUrl ?? '');},
+            ),
+            CupertinoActionSheetAction(
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Abrir Livro',
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Icon(Icons.chrome_reader_mode_rounded)
+                ],
+              ),
+              onPressed: () {},
+            )
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            isDefaultAction: true,
+            child: Text(
+              'Voltar',
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(contextDialog);
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> launchURL(String url) async {
+
+    final Directory extDir = await getApplicationDocumentsDirectory();
+    String? bookTitle = widget.book.title?.trim().toLowerCase().replaceAll(
+        " ", "_");
+    final String dirPath = '${extDir.path}/${bookTitle ?? 'book'}';
+    final _saveDir = Directory(dirPath);
+    bool hasExisted = await _saveDir.exists();
+    if (!hasExisted) {
+      _saveDir.create();
+    }
+
+    final downloaderUtils = DownloaderUtils(
+
+      progressCallback: (current, total) {
+
+        final progress = (current / total) * 100;
+
+        print('Downloading: $progress');
+
+      },
+
+      file: File(dirPath + ".epub"),
+
+      progress: ProgressImplementation(),
+
+      onDone: () => print('Download done'),
+
+      deleteOnCancel: true,
+
+    );
+
+    final core = await Flowder.download(url + ".epub",downloaderUtils);
+    print(core);
+    print(dirPath);
+    core.download(url, downloaderUtils);
+  }
+
 }
