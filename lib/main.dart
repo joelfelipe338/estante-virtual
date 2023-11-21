@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       title: 'Estante Virtual',
       home: BookCase(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
