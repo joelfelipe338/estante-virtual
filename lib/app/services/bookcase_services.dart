@@ -7,7 +7,7 @@ Future<List<BookModel>> getBooks() async {
   final response = await http.get(Uri.parse("https://escribo.com/books.json"));
 
   if (response.statusCode == 200){
-    List jsonData = json.decode(response.body);
+    List jsonData = json.decode(utf8.decode(response.bodyBytes));
     List<BookModel> books = [];
 
     for(var value in jsonData){

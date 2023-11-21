@@ -32,7 +32,7 @@ abstract class BookModelBase with Store {
   BookModelBase.fromJson(Map<String, dynamic> json){
     id = json['id'];
     title = json['title'];
-    autor = json['autor'];
+    autor = json['author'];
     coverUrl = json['cover_url'];
     downloadUrl = json['download_url'];
   }

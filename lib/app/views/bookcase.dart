@@ -38,9 +38,10 @@ class _BookCaseState extends State<BookCase> {
                 builder: (_){
                   return GridView.builder(
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
+                        crossAxisCount: 2,
                         mainAxisSpacing: 14.0,
                         crossAxisSpacing: 8.0,
+                        childAspectRatio: 0.5
                       ),
                       padding: const EdgeInsets.all(5),
                       itemCount: bookcaseController.showFavoritesBooks ? bookcaseController.favoriteBooks.length : bookcaseController.books.length ,

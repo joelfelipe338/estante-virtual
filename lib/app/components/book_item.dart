@@ -20,31 +20,65 @@ class _BookItemState extends State<BookItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            image: DecorationImage(
-                image: NetworkImage(widget.book.coverUrl ?? ""),
-                fit: BoxFit.contain),
+    return Card(
+      elevation: 5,
+      child: Stack(
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height * 0.3,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  image: DecorationImage(
+                      image: NetworkImage(widget.book.coverUrl ?? ""),
+                      fit: BoxFit.contain),
+
+                ),
+              ),
+              _title(),
+              _author(),
+            ],
           ),
-        ),
-        Observer(builder: (_){
-          return Positioned(
-            top: -4,
-            right: 10,
-            child: InkWell(onTap: widget.book.favorite
-                ? (){
-              bookcaseController.removeFavoriteBooks(favoriteBook: widget.book);
-            }
-                : (){
-              bookcaseController.addFavoriteBook(favoriteBook: widget.book);
-            } ,
-                child: Icon(Icons.bookmark, color:widget.book.favorite ? Colors.red  : Colors.amber,size: 30,)),
-          );
-        })
-      ],
+          Observer(builder: (_){
+            return Positioned(
+              top: -5,
+              right: 6,
+              child: InkWell(onTap: widget.book.favorite
+                  ? (){
+                bookcaseController.removeFavoriteBooks(favoriteBook: widget.book);
+              }
+                  : (){
+                bookcaseController.addFavoriteBook(favoriteBook: widget.book);
+              } ,
+                  child: Icon(Icons.bookmark, color:widget.book.favorite ? Colors.red  : Colors.amber,size: 46,)),
+            );
+          })
+        ],
+      ),
+    );
+  }
+
+  Widget _author(){
+    return FittedBox(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 6.0),
+        child: Text(widget.book.autor ?? '',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),),
+      ),
+    );
+  }
+
+  Widget _title(){
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+      child: Text(widget.book.title ?? '',
+        textAlign: TextAlign.center,
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+      ),
     );
   }
 }
