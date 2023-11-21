@@ -8,7 +8,8 @@ import '../services/bookcase_services.dart';
 
 class BookItem extends StatefulWidget {
   final BookModel book;
-  const BookItem({Key? key, required this.book}) : super(key: key);
+  final Function() onClick;
+  const BookItem({Key? key, required this.book, required this.onClick}) : super(key: key);
 
   @override
   State<BookItem> createState() => _BookItemState();
@@ -20,43 +21,46 @@ class _BookItemState extends State<BookItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Stack(
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                height: MediaQuery.of(context).size.height * 0.3,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  image: DecorationImage(
-                      image: NetworkImage(widget.book.coverUrl ?? ""),
-                      fit: BoxFit.contain),
+    return InkWell(
+      onTap: widget.onClick,
+      child: Card(
+        elevation: 5,
+        child: Stack(
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    image: DecorationImage(
+                        image: NetworkImage(widget.book.coverUrl ?? ""),
+                        fit: BoxFit.contain),
 
+                  ),
                 ),
-              ),
-              _title(),
-              _author(),
-            ],
-          ),
-          Observer(builder: (_){
-            return Positioned(
-              top: -5,
-              right: 6,
-              child: InkWell(onTap: widget.book.favorite
-                  ? (){
-                bookcaseController.removeFavoriteBooks(favoriteBook: widget.book);
-              }
-                  : (){
-                bookcaseController.addFavoriteBook(favoriteBook: widget.book);
-              } ,
-                  child: Icon(Icons.bookmark, color:widget.book.favorite ? Colors.red  : Colors.amber,size: 46,)),
-            );
-          })
-        ],
+                _title(),
+                _author(),
+              ],
+            ),
+            Observer(builder: (_){
+              return Positioned(
+                top: -5,
+                right: 6,
+                child: InkWell(onTap: widget.book.favorite
+                    ? (){
+                  bookcaseController.removeFavoriteBooks(favoriteBook: widget.book);
+                }
+                    : (){
+                  bookcaseController.addFavoriteBook(favoriteBook: widget.book);
+                } ,
+                    child: Icon(Icons.bookmark, color:widget.book.favorite ? Colors.red  : Colors.amber,size: 46,)),
+              );
+            })
+          ],
+        ),
       ),
     );
   }
