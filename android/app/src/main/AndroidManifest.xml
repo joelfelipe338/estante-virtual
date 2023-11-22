@@ -1,7 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.estante_virtual">
-   <application
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.estante_virtual"
+    >
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application
         android:label="estante_virtual"
+        android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -25,6 +31,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name="com.folioreader.ui.activity.SearchActivity" android:exported="true" tools:node="merge" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:vocsy_epub_viewer/epub_viewer.dart';
 
 import '../controller/bookcase_controller.dart';
 import '../models/book_model.dart';
@@ -129,7 +130,7 @@ class _BookItemState extends State<BookItem> {
                   Icon(Icons.chrome_reader_mode_rounded)
                 ],
               ),
-              onPressed: () {},
+              onPressed: () {_openBook();},
             )
           ],
           cancelButton: CupertinoActionSheetAction(
@@ -146,6 +147,29 @@ class _BookItemState extends State<BookItem> {
           ),
         );
       },
+    );
+  }
+
+  _openBook(){
+    VocsyEpub.setConfig(
+      themeColor: Theme.of(context).primaryColor,
+      identifier: "iosBook",
+      scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
+      allowSharing: true,
+      enableTts: true,
+      nightMode: true,
+    );
+
+    VocsyEpub.open(
+      (widget.book.downloadUrl ?? '') + ".epuc",
+      lastLocation: EpubLocator.fromJson({
+        "bookId": "2239",
+        "href": "/OEBPS/ch06.xhtml",
+        "created": 1539934158390,
+        "locations": {
+          "cfi": "epubcfi(/0!/4/4[simple_book]/2/2/6)"
+        }
+      }),
     );
   }
 
